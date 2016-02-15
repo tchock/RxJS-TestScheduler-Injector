@@ -6,9 +6,12 @@ var injectRxJsTestScheduler = {
       delay: Rx.Observable.prototype.delay,
       delaySubscription: Rx.Observable.prototype.delaySubscription,
       timeout: Rx.Observable.prototype.timeout,
+      bufferWithTime: Rx.Observable.prototype.bufferWithTime,
+      sample: Rx.Observable.prototype.sample,
     },
     observable: {
       interval: Rx.Observable.inverval,
+      timer: Rx.Observable.timer,
     },
   },
 
@@ -18,23 +21,34 @@ var injectRxJsTestScheduler = {
     var containerObj = (isProto) ? Rx.Observable.prototype : Rx.Observable;
     var original = (isProto) ? injectRxJsTestScheduler_originals.prototypes[method] : injectRxJsTestScheduler._originals.observable[method];
 
-    if (method === 'timeout') {
-      spyOn(containerObj, 'timeout').and.callFake(function() {
-        if (!_.isFunction(args[1])) {
-          return original.call(this, args[0], args[1], schedulerInstance);
-        }
-        return original.apply(this, args);
-      });
-    } else {
-      spyOn(containerObj, method).and.callFake(function() {
-        var args = [];
-        for (var i = 0; i < original.length; i++) {
-          args[i] = arguments[i];
-        }
+    switch (method) {
+      case 'timeout':
+        spyOn(containerObj, 'timeout').and.callFake(function() {
+          if (!_.isFunction(args[1])) {
+            return original.call(this, args[0], args[1], schedulerInstance);
+          }
+          return original.apply(this, args);
+        });
+        break;
 
-        args[args.length-1] = schedulerInstance;
-        return original.apply(this, args);
-      });
+      case 'bufferWithTime':
+        spyOn(containerObj, 'bufferWithTime').and.callFake(function() {
+          if (_.isNumber(args[1])) {
+            return original.call(this, args[0], args[1], schedulerInstance);
+          }
+          return original.call(this, args[0], schedulerInstance);
+        });
+        break;
+      default:
+        spyOn(containerObj, method).and.callFake(function() {
+          var args = [];
+          for (var i = 0; i < original.length; i++) {
+            args[i] = arguments[i];
+          }
+
+          args[args.length-1] = schedulerInstance;
+          return original.apply(this, args);
+        });
     }
 
     return containerObj[method];
