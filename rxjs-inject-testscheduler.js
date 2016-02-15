@@ -6,8 +6,10 @@ var injectRxJsTestScheduler = {
       delay: Rx.Observable.prototype.delay,
       delaySubscription: Rx.Observable.prototype.delaySubscription,
       timeout: Rx.Observable.prototype.timeout,
-      bufferWithTime: Rx.Observable.prototype.bufferWithTime,
       sample: Rx.Observable.prototype.sample,
+      bufferWithTime: Rx.Observable.prototype.bufferWithTime,
+      windowWithTime: Rx.Observable.prototype.windowWithTime,
+      timeInterval: Rx.Observable.prototype.timeInterval,
     },
     observable: {
       interval: Rx.Observable.inverval,
@@ -37,6 +39,15 @@ var injectRxJsTestScheduler = {
             return original.call(this, args[0], args[1], schedulerInstance);
           }
           return original.call(this, args[0], schedulerInstance);
+        });
+        break;
+
+      case 'windowWithTime':
+        spyOn(containerObj, 'windowWithTime').and.callFake(function() {
+          if (!_.isNumber(args[1])) {
+            return original.call(this, args[0], schedulerInstance);
+          }
+          return original.apply(this, args);
         });
         break;
       default:
