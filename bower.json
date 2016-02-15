@@ -7,5 +7,19 @@
     "rxjs": "~4.0.6",
     "lodash": "3.0.0"
   },
-  "author": "Simon Jentsch",
+  "ignore": [
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests",
+    "pages",
+    "css",
+    "src",
+    "config",
+    "Gruntfile.js",
+    "karma.conf.js",
+    "npm-debug.log",
+    "package.json"
+  ],
+  "author": "Simon Jentsch"
 }
