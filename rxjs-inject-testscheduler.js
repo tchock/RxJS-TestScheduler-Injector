@@ -67,9 +67,9 @@ var injectRxJsTestScheduler = {
 
   injectInto: function injectInto(method, schedulerInstance) {
     if (_.has(injectRxJsTestScheduler._originals.prototypes, method)) {
-      return _injectInto(method, schedulerInstance, true);
+      return injectRxJsTestScheduler._injectInto(method, schedulerInstance, true);
     } else if (_.has(injectRxJsTestScheduler._originals, method)) {
-      return _injectInto(method, schedulerInstance, false);
+      return injectRxJsTestScheduler._injectInto(method, schedulerInstance, false);
     } else {
       throw new Error('this method can\'t be injected with a scheduler');
     }
@@ -78,11 +78,11 @@ var injectRxJsTestScheduler = {
   inject: function inject(schedulerInstance) {
     injectRxJsTestScheduler._spies = {};
     _.forEach(injectRxJsTestScheduler._originals.observable, function(original, method) {
-      injectRxJsTestScheduler._spies[method] = _injectInto(key, schedulerInstance, false);
+      injectRxJsTestScheduler._spies[method] = injectRxJsTestScheduler._injectInto(key, schedulerInstance, false);
     });
 
     _.forEach(injectRxJsTestScheduler._originals.prototypes, function(original, method) {
-      injectRxJsTestScheduler._spies[method] = _injectInto(key, schedulerInstance, true);
+      injectRxJsTestScheduler._spies[method] = injectRxJsTestScheduler._injectInto(key, schedulerInstance, true);
     });
 
     return injectRxJsTestScheduler._spies;
