@@ -68,7 +68,7 @@ var injectRxJsTestScheduler = {
   injectInto: function injectInto(method, schedulerInstance) {
     if (_.has(injectRxJsTestScheduler._originals.prototypes, method)) {
       return injectRxJsTestScheduler._injectInto(method, schedulerInstance, true);
-    } else if (_.has(injectRxJsTestScheduler._originals, method)) {
+    } else if (_.has(injectRxJsTestScheduler._originals.observable, method)) {
       return injectRxJsTestScheduler._injectInto(method, schedulerInstance, false);
     } else {
       throw new Error('this method can\'t be injected with a scheduler');
