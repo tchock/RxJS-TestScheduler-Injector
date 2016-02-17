@@ -1,58 +1,100 @@
 describe('rxjs-inject-testscheduler', function() {
 
-  it('should inject all methods', function() {
-    spyOn(injectRxJsTestScheduler, '_injectInto').and.callFake(function(key) {
-      var spy = key + 'Spy';
-      return spy;
+  describe('inject', function() {
+    beforeEach(function () {
+      spyOn(injectRxJsTestScheduler, '_injectInto').and.callFake(function(key) {
+        var spy = key + 'Spy';
+        return spy;
+      });
+
+      injectRxJsTestScheduler._spies = {
+        shouldNot: 'surviveInjection',
+      };
     });
 
-    injectRxJsTestScheduler._spies = {
-      shouldNot: 'surviveInjection',
-    };
+    it('should inject all methods', function() {
+      var spies = injectRxJsTestScheduler.inject('scheduler');
+      expect(spies).toBe(injectRxJsTestScheduler._spies);
 
-    var spies = injectRxJsTestScheduler.inject('scheduler');
-    expect(spies).toBe(injectRxJsTestScheduler._spies);
+      expect(injectRxJsTestScheduler._spies.shouldNot).toBeUndefined();
 
-    expect(injectRxJsTestScheduler._spies.shouldNot).toBeUndefined();
+      // observable methods
+      expect(injectRxJsTestScheduler._injectInto).toHaveBeenCalledWith('interval', 'scheduler', false);
+      expect(injectRxJsTestScheduler._spies.interval).toBe('intervalSpy');
+      expect(injectRxJsTestScheduler._injectInto).toHaveBeenCalledWith('timer', 'scheduler', false);
+      expect(injectRxJsTestScheduler._spies.timer).toBe('timerSpy');
 
-    // observable methods
-    expect(injectRxJsTestScheduler._injectInto).toHaveBeenCalledWith('interval', 'scheduler', false);
-    expect(injectRxJsTestScheduler._spies.interval).toBe('intervalSpy');
-    expect(injectRxJsTestScheduler._injectInto).toHaveBeenCalledWith('timer', 'scheduler', false);
-    expect(injectRxJsTestScheduler._spies.timer).toBe('timerSpy');
+      // prototype methods
+      expect(injectRxJsTestScheduler._injectInto).toHaveBeenCalledWith('debounce', 'scheduler', true);
+      expect(injectRxJsTestScheduler._spies.debounce).toBe('debounceSpy');
+      expect(injectRxJsTestScheduler._injectInto).toHaveBeenCalledWith('throttle', 'scheduler', true);
+      expect(injectRxJsTestScheduler._spies.throttle).toBe('throttleSpy');
+      expect(injectRxJsTestScheduler._injectInto).toHaveBeenCalledWith('delay', 'scheduler', true);
+      expect(injectRxJsTestScheduler._spies.delay).toBe('delaySpy');
+      expect(injectRxJsTestScheduler._injectInto).toHaveBeenCalledWith('delaySubscription', 'scheduler', true);
+      expect(injectRxJsTestScheduler._spies.delaySubscription).toBe('delaySubscriptionSpy');
+      expect(injectRxJsTestScheduler._injectInto).toHaveBeenCalledWith('timeout', 'scheduler', true);
+      expect(injectRxJsTestScheduler._spies.timeout).toBe('timeoutSpy');
+      expect(injectRxJsTestScheduler._injectInto).toHaveBeenCalledWith('sample', 'scheduler', true);
+      expect(injectRxJsTestScheduler._spies.sample).toBe('sampleSpy');
+      expect(injectRxJsTestScheduler._injectInto).toHaveBeenCalledWith('bufferWithTime', 'scheduler', true);
+      expect(injectRxJsTestScheduler._spies.bufferWithTime).toBe('bufferWithTimeSpy');
+      expect(injectRxJsTestScheduler._injectInto).toHaveBeenCalledWith('windowWithTime', 'scheduler', true);
+      expect(injectRxJsTestScheduler._spies.windowWithTime).toBe('windowWithTimeSpy');
+      expect(injectRxJsTestScheduler._injectInto).toHaveBeenCalledWith('timeInterval', 'scheduler', true);
+      expect(injectRxJsTestScheduler._spies.timeInterval).toBe('timeIntervalSpy');
+    });
 
-    // prototype methods
-    expect(injectRxJsTestScheduler._injectInto).toHaveBeenCalledWith('debounce', 'scheduler', true);
-    expect(injectRxJsTestScheduler._spies.debounce).toBe('debounceSpy');
-    expect(injectRxJsTestScheduler._injectInto).toHaveBeenCalledWith('throttle', 'scheduler', true);
-    expect(injectRxJsTestScheduler._spies.throttle).toBe('throttleSpy');
-    expect(injectRxJsTestScheduler._injectInto).toHaveBeenCalledWith('delay', 'scheduler', true);
-    expect(injectRxJsTestScheduler._spies.delay).toBe('delaySpy');
-    expect(injectRxJsTestScheduler._injectInto).toHaveBeenCalledWith('delaySubscription', 'scheduler', true);
-    expect(injectRxJsTestScheduler._spies.delaySubscription).toBe('delaySubscriptionSpy');
-    expect(injectRxJsTestScheduler._injectInto).toHaveBeenCalledWith('timeout', 'scheduler', true);
-    expect(injectRxJsTestScheduler._spies.timeout).toBe('timeoutSpy');
-    expect(injectRxJsTestScheduler._injectInto).toHaveBeenCalledWith('sample', 'scheduler', true);
-    expect(injectRxJsTestScheduler._spies.sample).toBe('sampleSpy');
-    expect(injectRxJsTestScheduler._injectInto).toHaveBeenCalledWith('bufferWithTime', 'scheduler', true);
-    expect(injectRxJsTestScheduler._spies.bufferWithTime).toBe('bufferWithTimeSpy');
-    expect(injectRxJsTestScheduler._injectInto).toHaveBeenCalledWith('windowWithTime', 'scheduler', true);
-    expect(injectRxJsTestScheduler._spies.windowWithTime).toBe('windowWithTimeSpy');
-    expect(injectRxJsTestScheduler._injectInto).toHaveBeenCalledWith('timeInterval', 'scheduler', true);
-    expect(injectRxJsTestScheduler._spies.timeInterval).toBe('timeIntervalSpy');
+    it('should inject all methods with exception', function() {
+      var spies = injectRxJsTestScheduler.inject('scheduler', [
+        'interval', 'debounce', 'delay', 'delaySubscription', 'timeout',
+        'sample', 'bufferWithTime', 'windowWithTime', 'timeInterval'
+      ]);
+
+      expect(injectRxJsTestScheduler._spies).toEqual({
+        timer: 'timerSpy',
+        throttle: 'throttleSpy',
+      });
+
+      // observable methods
+      expect(injectRxJsTestScheduler._injectInto).not.toHaveBeenCalledWith('interval', 'scheduler', false);
+      expect(injectRxJsTestScheduler._injectInto).toHaveBeenCalledWith('timer', 'scheduler', false);
+
+      // prototype methods
+      expect(injectRxJsTestScheduler._injectInto).not.toHaveBeenCalledWith('debounce', 'scheduler', true);
+      expect(injectRxJsTestScheduler._injectInto).toHaveBeenCalledWith('throttle', 'scheduler', true);
+      expect(injectRxJsTestScheduler._injectInto).not.toHaveBeenCalledWith('delay', 'scheduler', true);
+      expect(injectRxJsTestScheduler._injectInto).not.toHaveBeenCalledWith('delaySubscription', 'scheduler', true);
+      expect(injectRxJsTestScheduler._injectInto).not.toHaveBeenCalledWith('timeout', 'scheduler', true);
+      expect(injectRxJsTestScheduler._injectInto).not.toHaveBeenCalledWith('sample', 'scheduler', true);
+      expect(injectRxJsTestScheduler._injectInto).not.toHaveBeenCalledWith('bufferWithTime', 'scheduler', true);
+      expect(injectRxJsTestScheduler._injectInto).not.toHaveBeenCalledWith('windowWithTime', 'scheduler', true);
+      expect(injectRxJsTestScheduler._injectInto).not.toHaveBeenCalledWith('timeInterval', 'scheduler', true);
+
+    });
   });
 
   describe('injectInto', function() {
+    var prototypeOriginalsBackup;
+    var observableOriginalsBackup;
+
     beforeEach(function () {
       spyOn(injectRxJsTestScheduler, '_injectInto').and.returnValue('injectIntoSpy');
 
       // Just for testing reasons (safe against changes!)
+      prototypeOriginalsBackup = injectRxJsTestScheduler._originals.prototypes;
       injectRxJsTestScheduler._originals.prototypes = {
         debounce: 'prototypeMethod',
       };
+      observableOriginalsBackup = injectRxJsTestScheduler._originals.observable;
       injectRxJsTestScheduler._originals.observable = {
         interval: 'observableMethod',
       };
+    });
+
+    afterEach(function () {
+      injectRxJsTestScheduler._originals.prototypes = prototypeOriginalsBackup;
+      injectRxJsTestScheduler._originals.observable = observableOriginalsBackup;
     });
 
     it('should inject scheduler into Rx.Observable method', function() {
@@ -76,9 +118,9 @@ describe('rxjs-inject-testscheduler', function() {
 
   describe('_injectInto', function() {
     function isNoException() {
-      expect(Rx.observable.prototype.timeout).not.toBeSpy();
-      expect(Rx.observable.prototype.bufferWithTime).not.toBeSpy();
-      expect(Rx.observable.prototype.windowWithTime).not.toBeSpy();
+      expect(Rx.observable.prototype.timeout.isSpy).toBeUndefined();
+      expect(Rx.observable.prototype.bufferWithTime.isSpy).toBeUndefined();
+      expect(Rx.observable.prototype.windowWithTime.isSpy).toBeUndefined();
     }
 
     describe('Rx.Observable.prototype', function() {
