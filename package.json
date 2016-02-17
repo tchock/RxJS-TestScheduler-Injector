@@ -2,7 +2,7 @@
   "name": "rxjs-jasmine-testscheduler-injector",
   "description": "injects the TestScheduler of RxJs via Jasmine spies into time related Observable instance methods.",
   "main": "rxjs-inject-testscheduler.js",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "dependencies": {},
   "devDependencies": {
     "jasmine-core": "^2.3.0",
