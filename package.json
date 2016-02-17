@@ -10,6 +10,7 @@
     "url": ""
   },
   "author": "Simon Jentsch",
+  "test": "karma start my.conf.js",
   "license": "MIT",
   "homepage": "https://www.hyphe.me/"
 }

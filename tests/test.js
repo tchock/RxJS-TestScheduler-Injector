@@ -1,4 +1,4 @@
-describe('rx-inject-testscheduler', function() {
+describe('rxjs-inject-testscheduler', function() {
 
   it('should inject all methods', function() {
     spyOn(injectRxJsTestScheduler, '_injectInto').and.callFake(function(key) {
@@ -73,6 +73,49 @@ describe('rx-inject-testscheduler', function() {
       }).toThrowError('The method "notfound" can\'t be injected with a scheduler');
     });
   });
+
+  describe('_injectInto', function() {
+    function isNoException() {
+      expect(Rx.observable.prototype.timeout).not.toBeSpy();
+      expect(Rx.observable.prototype.bufferWithTime).not.toBeSpy();
+      expect(Rx.observable.prototype.windowWithTime).not.toBeSpy();
+    }
+
+    describe('Rx.Observable.prototype', function() {
+      it('should spy on a method that is called with all arguments (except scheduler)');
+
+      it('should spy on a method that is called with all arguments (including scheduler)');
+
+      it('should spy on a method that is called with one argument missing');
+
+      describe('timeout', function() {
+        it('should spy on the timeout method and call it with argument 2 being a function');
+
+        it('should spy on the timeout method and call it with argument 2 NOT being a function');
+      });
+
+      describe('bufferWithTime', function() {
+        it('should spy on the bufferWithTime method and call it with argument 2 being a number');
+
+        it('should spy on the bufferWithTime method and call it with argument 2 NOT being a number');
+      });
+
+      describe('bufferWithTime', function() {
+        it('should spy on the windowWithTime method and call it with argument 2 being a number');
+
+        it('should spy on the windowWithTime method and call it with argument 2 NOT being a number');
+      });
+    });
+
+    describe('Rx.Observable', function() {
+      it('should spy on a method and call it with all arguments (except scheduler)');
+
+      it('should spy on a method and call it with all arguments (including scheduler)');
+
+      it('should spy on a method and call it with one argument missing');
+    });
+  });
+
 
 
 });
