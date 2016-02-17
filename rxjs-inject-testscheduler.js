@@ -1,4 +1,4 @@
-var injectRxJsTestScheduler = {
+var RxJsTestSchedulerInjector = {
   _originals: {
     prototypes: {
       debounce: Rx.Observable.prototype.debounce,
@@ -17,7 +17,7 @@ var injectRxJsTestScheduler = {
 
   _injectInto: function _injectInto(method, schedulerInstance, isProto) {
     var containerObj = (isProto) ? Rx.Observable.prototype : Rx.Observable;
-    var original = (isProto) ? injectRxJsTestScheduler._originals.prototypes[method] : injectRxJsTestScheduler._originals.observable[method];
+    var original = (isProto) ? RxJsTestSchedulerInjector._originals.prototypes[method] : RxJsTestSchedulerInjector._originals.observable[method];
 
     switch (method) {
       case 'timer':
@@ -73,10 +73,10 @@ var injectRxJsTestScheduler = {
   },
 
   injectInto: function injectInto(method, schedulerInstance) {
-    if (_.has(injectRxJsTestScheduler._originals.prototypes, method)) {
-      return injectRxJsTestScheduler._injectInto(method, schedulerInstance, true);
-    } else if (_.has(injectRxJsTestScheduler._originals.observable, method)) {
-      return injectRxJsTestScheduler._injectInto(method, schedulerInstance, false);
+    if (_.has(RxJsTestSchedulerInjector._originals.prototypes, method)) {
+      return RxJsTestSchedulerInjector._injectInto(method, schedulerInstance, true);
+    } else if (_.has(RxJsTestSchedulerInjector._originals.observable, method)) {
+      return RxJsTestSchedulerInjector._injectInto(method, schedulerInstance, false);
     } else {
       throw new Error('The method "' + method + '" can\'t be injected with a scheduler');
     }
@@ -84,19 +84,19 @@ var injectRxJsTestScheduler = {
 
   inject: function inject(schedulerInstance, exceptions) {
     var _exceptions = exceptions || [];
-    injectRxJsTestScheduler._spies = {};
-    _.forEach(injectRxJsTestScheduler._originals.observable, function(original, method) {
+    RxJsTestSchedulerInjector._spies = {};
+    _.forEach(RxJsTestSchedulerInjector._originals.observable, function(original, method) {
       if (!_.includes(_exceptions, method)) {
-        injectRxJsTestScheduler._spies[method] = injectRxJsTestScheduler._injectInto(method, schedulerInstance, false);
+        RxJsTestSchedulerInjector._spies[method] = RxJsTestSchedulerInjector._injectInto(method, schedulerInstance, false);
       }
     });
 
-    _.forEach(injectRxJsTestScheduler._originals.prototypes, function(original, method) {
+    _.forEach(RxJsTestSchedulerInjector._originals.prototypes, function(original, method) {
       if (!_.includes(_exceptions, method)) {
-        injectRxJsTestScheduler._spies[method] = injectRxJsTestScheduler._injectInto(method, schedulerInstance, true);
+        RxJsTestSchedulerInjector._spies[method] = RxJsTestSchedulerInjector._injectInto(method, schedulerInstance, true);
       }
     });
 
-    return injectRxJsTestScheduler._spies;
+    return RxJsTestSchedulerInjector._spies;
   },
 };
