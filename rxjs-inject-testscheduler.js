@@ -80,13 +80,13 @@ var injectRxJsTestScheduler = {
     injectRxJsTestScheduler._spies = {};
     _.forEach(injectRxJsTestScheduler._originals.observable, function(original, method) {
       if (!_.includes(_exceptions, method)) {
-        injectRxJsTestScheduler._spies[method] = injectRxJsTestScheduler._injectInto(key, schedulerInstance, false);
+        injectRxJsTestScheduler._spies[method] = injectRxJsTestScheduler._injectInto(method, schedulerInstance, false);
       }
     });
 
     _.forEach(injectRxJsTestScheduler._originals.prototypes, function(original, method) {
       if (!_.includes(_exceptions, method)) {
-        injectRxJsTestScheduler._spies[method] = injectRxJsTestScheduler._injectInto(key, schedulerInstance, true);
+        injectRxJsTestScheduler._spies[method] = injectRxJsTestScheduler._injectInto(method, schedulerInstance, true);
       }
     });
 
