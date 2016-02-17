@@ -19,7 +19,7 @@ module.exports = function(config) {
       'bower_components/rxjs/dist/rx.async.js',
       'bower_components/rxjs/dist/rx.virtualtime.js',
       'bower_components/rxjs/dist/rx.testing.js',
-      'rxjs-inject-testscheduler.js',
+      'rxjs-testscheduler-injector.js',
       'tests/test.js',
     ],
 
@@ -27,7 +27,7 @@ module.exports = function(config) {
     exclude: [],
 
     preprocessors: {
-      'rxjs-inject-testscheduler.js': [
+      'rxjs-testscheduler-injector.js': [
         'coverage'
       ]
     },
