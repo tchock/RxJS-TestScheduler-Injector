@@ -27,7 +27,7 @@ module.exports = function(config) {
     exclude: [],
 
     preprocessors: {
-      'src/**/*.js': [
+      'rxjs-inject-testscheduler.js': [
         'coverage'
       ]
     },
