@@ -4,13 +4,22 @@
   "main": "rxjs-inject-testscheduler.js",
   "version": "0.0.1",
   "dependencies": {},
-  "devDependencies": {},
+  "devDependencies": {
+    "jasmine-core": "^2.3.0",
+    "karma": "^0.12.21",
+    "karma-coverage": "^0.4.2",
+    "karma-spec-reporter": "0.0.19",
+    "karma-jasmine": "^0.3.5",
+    "karma-phantomjs-launcher": "0.1.2"
+  },
   "repository": {
     "type": "git",
     "url": ""
   },
   "author": "Simon Jentsch",
-  "test": "karma start my.conf.js",
+  "scripts": {
+    "test": "karma start tests/karma.conf.js"
+  },
   "license": "MIT",
   "homepage": "https://www.hyphe.me/"
 }
