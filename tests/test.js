@@ -57,17 +57,17 @@ describe('rxjs-inject-testscheduler', function() {
 
     it('should inject scheduler into Rx.Observable method', function() {
       var injectSpy = injectRxJsTestScheduler.injectInto('interval', 'intervalScheduler');
-      expect(injectRxJsTestScheduler._injectInto).toHaveBeenCalledWith('interval', 'debounceScheduler', false);
+      expect(injectRxJsTestScheduler._injectInto).toHaveBeenCalledWith('interval', 'intervalScheduler', false);
       expect(injectSpy).toBe('injectIntoSpy');
     });
 
-    it('should inject scheduler into Rx.Observable.prototyp method', function() {
-      var injectSpy = injectRxJsTestScheduler.injectInto('debouce', 'debouceScheduler');
+    it('should inject scheduler into Rx.Observable.prototype method', function() {
+      var injectSpy = injectRxJsTestScheduler.injectInto('debounce', 'debounceScheduler');
       expect(injectRxJsTestScheduler._injectInto).toHaveBeenCalledWith('debounce', 'debounceScheduler', true);
       expect(injectSpy).toBe('injectIntoSpy');
     });
 
-    it('should throw error because method can\' be injected', function() {
+    it('should throw error because method can\'t be injected', function() {
       expect(function() {
         injectRxJsTestScheduler.injectInto('notfound', 'notfoundScheduler');
       }).toThrowError('The method "notfound" can\'t be injected with a scheduler');
