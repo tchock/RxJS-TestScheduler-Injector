@@ -4,15 +4,11 @@ var injectRxJsTestScheduler = {
       debounce: Rx.Observable.prototype.debounce,
       throttle: Rx.Observable.prototype.throttle,
       delay: Rx.Observable.prototype.delay,
-      delaySubscription: Rx.Observable.prototype.delaySubscription,
       timeout: Rx.Observable.prototype.timeout,
       sample: Rx.Observable.prototype.sample,
-      bufferWithTime: Rx.Observable.prototype.bufferWithTime,
-      windowWithTime: Rx.Observable.prototype.windowWithTime,
-      timeInterval: Rx.Observable.prototype.timeInterval,
     },
     observable: {
-      interval: Rx.Observable.inverval,
+      interval: Rx.Observable.interval,
       timer: Rx.Observable.timer,
     },
   },
@@ -21,43 +17,54 @@ var injectRxJsTestScheduler = {
 
   _injectInto: function _injectInto(method, schedulerInstance, isProto) {
     var containerObj = (isProto) ? Rx.Observable.prototype : Rx.Observable;
-    var original = (isProto) ? injectRxJsTestScheduler_originals.prototypes[method] : injectRxJsTestScheduler._originals.observable[method];
+    var original = (isProto) ? injectRxJsTestScheduler._originals.prototypes[method] : injectRxJsTestScheduler._originals.observable[method];
 
     switch (method) {
+      case 'timer':
+        spyOn(containerObj, 'timer').and.callFake(function(arg1, arg2, arg3) {
+          if (_.isNumber(arg2)) {
+            return original.call(this, arg1, arg2, schedulerInstance);
+          }
+          return original.call(this, arg1, schedulerInstance);
+        });
+        break;
+
+      case 'delay':
+        spyOn(containerObj, 'delay').and.callFake(function(arg1, arg2) {
+          if (_.isFunction(arg2)) {
+            return original.call(this, arg1, arg2);
+          }
+          return original.call(this, arg1, schedulerInstance);
+        });
+        break;
+
       case 'timeout':
-        spyOn(containerObj, 'timeout').and.callFake(function() {
-          if (!_.isFunction(args[1])) {
-            return original.call(this, args[0], args[1], schedulerInstance);
+        spyOn(containerObj, 'timeout').and.callFake(function(arg1, arg2, arg3) {
+          if (_.isFunction(arg2)) {
+            return original.call(this, arg1, arg2, arg3);
           }
-          return original.apply(this, args);
+          return original.call(this, arg1, arg2, schedulerInstance);
         });
         break;
 
-      case 'bufferWithTime':
-        spyOn(containerObj, 'bufferWithTime').and.callFake(function() {
-          if (_.isNumber(args[1])) {
-            return original.call(this, args[0], args[1], schedulerInstance);
+      case 'debounce':
+        spyOn(containerObj, 'debounce').and.callFake(function(arg1, arg2) {
+          if (_.isNumber(arg1)) {
+            return original.call(this, arg1, schedulerInstance);
           }
-          return original.call(this, args[0], schedulerInstance);
-        });
-        break;
-
-      case 'windowWithTime':
-        spyOn(containerObj, 'windowWithTime').and.callFake(function() {
-          if (_.isNumber(args[1])) {
-            return original.apply(this, args);
-          }
-          return original.call(this, args[0], schedulerInstance);
+          return original.call(this, arg1);
         });
         break;
       default:
-        spyOn(containerObj, method).and.callFake(function() {
+        spyOn(containerObj, method).and.callFake(function(arg1, arg2, arg3) {
+          var _arguments = [arg1, arg2, arg3];
           var args = [];
+
           for (var i = 0; i < original.length; i++) {
-            args[i] = arguments[i];
+            args[i] = _arguments[i];
           }
 
-          args[args.length-1] = schedulerInstance;
+          args[args.length - 1] = schedulerInstance;
           return original.apply(this, args);
         });
     }
