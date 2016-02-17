@@ -19,7 +19,7 @@ var injectRxJsTestScheduler = {
 
   _spies: {},
 
-  _injectInto: function _injectIntoPrototype(method, schedulerInstance, isProto) {
+  _injectInto: function _injectInto(method, schedulerInstance, isProto) {
     var containerObj = (isProto) ? Rx.Observable.prototype : Rx.Observable;
     var original = (isProto) ? injectRxJsTestScheduler_originals.prototypes[method] : injectRxJsTestScheduler._originals.observable[method];
 
@@ -44,10 +44,10 @@ var injectRxJsTestScheduler = {
 
       case 'windowWithTime':
         spyOn(containerObj, 'windowWithTime').and.callFake(function() {
-          if (!_.isNumber(args[1])) {
-            return original.call(this, args[0], schedulerInstance);
+          if (_.isNumber(args[1])) {
+            return original.apply(this, args);
           }
-          return original.apply(this, args);
+          return original.call(this, args[0], schedulerInstance);
         });
         break;
       default:
