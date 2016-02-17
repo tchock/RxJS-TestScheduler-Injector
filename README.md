@@ -2,6 +2,14 @@
 
 RxJs-TestScheduler-Injector injects your ```Rx.TestScheduler``` into time related ```Rx.Observable``` operations using Jasmine spies.
 
+## Installation
+
+Just use bower to install RxJs-TestScheduler-Injector:
+
+```
+bower install rxjs-testscheduler-injector --save-dev
+```
+
 ## Usage
 
 To inject your test scheduler to all operators use:
