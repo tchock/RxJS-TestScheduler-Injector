@@ -34,7 +34,7 @@ var debounceSpy = returnedObject.debounce;
 Besides the ```inject``` method to inject to all operators there is the possibility to just inject to a single one using
 
 ```js
-RxJsTestSchedulerInjector.injectInto(operation, testScheduler);
+RxJsTestSchedulerInjector.injectInto(operatorName, testScheduler);
 ```
 
 with the name of the operator (as a ```String```) and the test scheduler index.
