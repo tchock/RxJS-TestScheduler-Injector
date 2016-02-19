@@ -34,7 +34,9 @@ And also inject the test scheduler into these ```Rx.Observable``` operations:
 This function returns an ```Object``` containing the created spies. If you want to access the spy for the debounce operator, use:
 
 ```js
-var debounceSpy = returnedObject.debounce;
+var rxjsSpies = RxJsTestSchedulerInjector.inject(yourTestScheduler);
+var debounceSpy = rxjsSpies.debounce;
+expect(debounceSpy).toHaveBeenCalledWith(200);
 ```
 
 ### Handling exceptions
