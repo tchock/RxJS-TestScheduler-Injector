@@ -37,9 +37,19 @@ This function returns an ```Object``` containing the created spies. If you want 
 var debounceSpy = returnedObject.debounce;
 ```
 
+### Handling exceptions
+
+The `inject()` method also has the ability to exclude some methods when injecting the `TestScheduler`:
+
+```js
+RxJsTestSchedulerInjector.inject(yourTestScheduler, ['debouce', 'inverval', 'delay']);
+```
+
+The exceptions always have to be passed as an array of method names (look for possible methods in the lists above).
+
 ## Injecting to specific operators
 
-Besides the ```inject``` method to inject to all operators there is the possibility to just inject to a single one using
+Besides the `inject` method to inject to all operators there is the possibility to just inject to a single one using
 
 ```js
 RxJsTestSchedulerInjector.injectInto(operatorName, testScheduler);
