@@ -8,7 +8,7 @@ You can use npm or Bower:
 
 ### npm
 ```
-npm install rx-testscheduler-injector --save-dev
+npm install rx-jasmine-testscheduler-injector --save-dev
 ```
 
 ### Bower
@@ -23,7 +23,7 @@ To inject your test scheduler to all operators use:
 
 ```js
 // Do this when you use npm
-const RxJsTestSchedulerInjector = require('rx-testscheduler-injector');
+const RxJsTestSchedulerInjector = require('rx-jasmine-testscheduler-injector');
 
 // This then works for npm and Bower
 RxJsTestSchedulerInjector.inject(yourTestScheduler);
