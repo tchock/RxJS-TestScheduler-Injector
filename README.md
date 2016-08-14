@@ -1,10 +1,17 @@
-# RxJs-TestScheduler-Injector
+# Rx-TestScheduler-Injector
 
-RxJs-TestScheduler-Injector injects your ```Rx.TestScheduler``` into time related ```Rx.Observable``` operations using Jasmine spies.
+Rx-TestScheduler-Injector injects your ```Rx.TestScheduler``` into time related ```Rx.Observable``` operations using Jasmine spies.
 
 ## Installation
 
-Just use bower to install RxJs-TestScheduler-Injector:
+You can use npm or Bower:
+
+### npm
+```
+npm install rx-testscheduler-injector --save-dev
+```
+
+### Bower
 
 ```
 bower install rxjs-testscheduler-injector --save-dev
@@ -15,6 +22,10 @@ bower install rxjs-testscheduler-injector --save-dev
 To inject your test scheduler to all operators use:
 
 ```js
+// Do this when you use npm
+const RxJsTestSchedulerInjector = require('rx-testscheduler-injector');
+
+// This then works for npm and Bower
 RxJsTestSchedulerInjector.inject(yourTestScheduler);
 ```
 

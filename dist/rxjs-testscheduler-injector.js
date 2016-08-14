@@ -1,0 +1,114 @@
+(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.RxJsTestSchedulerInjector = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+var _ = (window._);
+var Rx = (window.Rx);
+
+
+
+
+var RxJsTestSchedulerInjector = {
+  _originals: {
+    prototypes: {
+      debounce: Rx.Observable.prototype.debounce,
+      throttle: Rx.Observable.prototype.throttle,
+      delay: Rx.Observable.prototype.delay,
+      timeout: Rx.Observable.prototype.timeout,
+      sample: Rx.Observable.prototype.sample,
+    },
+    observable: {
+      interval: Rx.Observable.interval,
+      timer: Rx.Observable.timer,
+    },
+  },
+
+  _spies: {},
+
+  _injectInto: function _injectInto(method, schedulerInstance, isProto) {
+    var containerObj = (isProto) ? Rx.Observable.prototype : Rx.Observable;
+    var original = (isProto) ? RxJsTestSchedulerInjector._originals.prototypes[method] : RxJsTestSchedulerInjector._originals.observable[method];
+
+    switch (method) {
+      case 'timer':
+        spyOn(containerObj, 'timer').and.callFake(function(arg1, arg2, arg3) {
+          if (_.isNumber(arg2)) {
+            return original.call(this, arg1, arg2, schedulerInstance);
+          }
+          return original.call(this, arg1, schedulerInstance);
+        });
+        break;
+
+      case 'delay':
+        spyOn(containerObj, 'delay').and.callFake(function(arg1, arg2) {
+          if (_.isFunction(arg2)) {
+            return original.call(this, arg1, arg2);
+          }
+          return original.call(this, arg1, schedulerInstance);
+        });
+        break;
+
+      case 'timeout':
+        spyOn(containerObj, 'timeout').and.callFake(function(arg1, arg2, arg3) {
+          if (_.isFunction(arg2)) {
+            return original.call(this, arg1, arg2, arg3);
+          }
+          return original.call(this, arg1, arg2, schedulerInstance);
+        });
+        break;
+
+      case 'debounce':
+        spyOn(containerObj, 'debounce').and.callFake(function(arg1, arg2) {
+          if (_.isNumber(arg1)) {
+            return original.call(this, arg1, schedulerInstance);
+          }
+          return original.call(this, arg1);
+        });
+        break;
+      default:
+        spyOn(containerObj, method).and.callFake(function(arg1, arg2, arg3) {
+          var _arguments = [arg1, arg2, arg3];
+          var args = [];
+
+          for (var i = 0; i < original.length; i++) {
+            args[i] = _arguments[i];
+          }
+
+          args[args.length - 1] = schedulerInstance;
+          return original.apply(this, args);
+        });
+    }
+
+    return containerObj[method];
+  },
+
+  injectInto: function injectInto(method, schedulerInstance) {
+    if (_.has(RxJsTestSchedulerInjector._originals.prototypes, method)) {
+      return RxJsTestSchedulerInjector._injectInto(method, schedulerInstance, true);
+    } else if (_.has(RxJsTestSchedulerInjector._originals.observable, method)) {
+      return RxJsTestSchedulerInjector._injectInto(method, schedulerInstance, false);
+    } else {
+      throw new Error('The method "' + method + '" can\'t be injected with a scheduler');
+    }
+  },
+
+  inject: function inject(schedulerInstance, exceptions) {
+    var _exceptions = exceptions || [];
+    RxJsTestSchedulerInjector._spies = {};
+    _.forEach(RxJsTestSchedulerInjector._originals.observable, function(original, method) {
+      if (!_.includes(_exceptions, method)) {
+        RxJsTestSchedulerInjector._spies[method] = RxJsTestSchedulerInjector._injectInto(method, schedulerInstance, false);
+      }
+    });
+
+    _.forEach(RxJsTestSchedulerInjector._originals.prototypes, function(original, method) {
+      if (!_.includes(_exceptions, method)) {
+        RxJsTestSchedulerInjector._spies[method] = RxJsTestSchedulerInjector._injectInto(method, schedulerInstance, true);
+      }
+    });
+
+    return RxJsTestSchedulerInjector._spies;
+  },
+}
+
+module.exports = RxJsTestSchedulerInjector;
+
+},{}]},{},[1])(1)
+});

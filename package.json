@@ -1,16 +1,32 @@
 {
-  "name": "rxjs-jasmine-testscheduler-injector",
-  "description": "injects the TestScheduler of RxJs via Jasmine spies into time related Observable instance methods.",
-  "main": "rxjs-inject-testscheduler.js",
+  "name": "rx-jasmine-testscheduler-injector",
+  "description": "injects the TestScheduler of RxJs 4 (and lower) via Jasmine spies into time related Observable instance methods.",
+  "main": "src/rx-inject-testscheduler.js",
   "version": "0.1.0",
-  "dependencies": {},
+  "dependencies": {
+    "lodash": "^4.15.0",
+    "rx": "^4.1.0"
+  },
   "devDependencies": {
+    "browserify": "^13.1.0",
+    "browserify-global-shim": "^1.0.3",
     "jasmine-core": "^2.3.0",
     "karma": "^0.12.21",
+    "karma-chrome-launcher": "^1.0.1",
     "karma-coverage": "^0.4.2",
-    "karma-spec-reporter": "0.0.19",
     "karma-jasmine": "^0.3.5",
-    "karma-phantomjs-launcher": "0.1.2"
+    "karma-phantomjs-launcher": "0.1.2",
+    "karma-spec-reporter": "0.0.19",
+    "phantomjs-prebuilt": "^2.1.12"
+  },
+  "browserify": {
+    "transform": [
+      "browserify-global-shim"
+    ]
+  },
+  "browserify-global-shim": {
+    "rx": "Rx",
+    "lodash": "_"
   },
   "repository": {
     "type": "git",
@@ -18,7 +34,8 @@
   },
   "author": "Simon Jentsch",
   "scripts": {
-    "test": "karma start tests/karma.conf.js"
+    "build_bower": "./node_modules/browserify/bin/cmd.js src/rx-testscheduler-injector.js --standalone RxJsTestSchedulerInjector > dist/rxjs-testscheduler-injector.js",
+    "test": "npm run build_bower && ./node_modules/karma/bin/karma start tests/karma.conf.js"
   },
   "license": "MIT",
   "homepage": "https://www.hyphe.me/"

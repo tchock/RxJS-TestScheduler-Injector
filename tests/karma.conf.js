@@ -19,7 +19,7 @@ module.exports = function(config) {
       'bower_components/rxjs/dist/rx.async.js',
       'bower_components/rxjs/dist/rx.virtualtime.js',
       'bower_components/rxjs/dist/rx.testing.js',
-      'rxjs-testscheduler-injector.js',
+      'dist/rxjs-testscheduler-injector.js',
       'tests/test.js',
     ],
 
@@ -50,7 +50,7 @@ module.exports = function(config) {
 
     // start these browsers
     // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-    browsers: ['PhantomJS'],
+    browsers: ['Chrome'],
 
     // Continuous Integration mode
     // if true, Karma captures browsers, runs the tests and exits
